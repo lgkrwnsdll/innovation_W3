@@ -2,8 +2,6 @@ package com.sparta.week3_1.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sparta.week3_1.dto.ArticleRequestDto;
-import com.sparta.week3_1.entity.Timestamped;
-import com.sparta.week3_1.repository.BoardRepository;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
