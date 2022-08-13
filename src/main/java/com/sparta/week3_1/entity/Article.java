@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 @NoArgsConstructor // 기본 생성자 생성
-@Entity
+@Entity // DB 테이블 역할
 @Getter
 public class Article extends Timestamped {
 
