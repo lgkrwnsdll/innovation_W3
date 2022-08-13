@@ -25,9 +25,8 @@ public class BoardService {
 
     @Transactional
     public Article findById(Long id) {
-        Article article1 = boardRepository.findById(id).orElseThrow(
+        return boardRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("해당 아이디가 존재하지 않습니다.")
         );
-        return article1;
     }
 }
