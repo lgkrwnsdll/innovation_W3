@@ -2,12 +2,13 @@ package com.sparta.week3_1.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sparta.week3_1.dto.ArticleRequestDto;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
-@NoArgsConstructor // 기본 생성자 생성
+@NoArgsConstructor(access = AccessLevel.PROTECTED) // 기본 생성자 생성, 접근 권한 protected 지정
 @Entity // DB 테이블 역할
 @Getter
 public class Article extends Timestamped {

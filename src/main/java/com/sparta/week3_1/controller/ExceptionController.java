@@ -1,5 +1,6 @@
-package com.sparta.week3_1.service;
+package com.sparta.week3_1.controller;
 
+import com.sparta.week3_1.dto.ArticleResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -11,20 +12,12 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RequiredArgsConstructor
 public class ExceptionController {
 
-    private final ResponseService responseService;
-
     // 아래의 에러 발생 시 해당 메소드 실행하여 응답 반환
 
-    @ExceptionHandler(value = IllegalArgumentException.class)
-    private CommonResponse illegalArgumentException(IllegalArgumentException e) {
+    @ExceptionHandler({IllegalArgumentException.class, EmptyResultDataAccessException.class})
+    private ArticleResponseDto.NullId handle (Exception e) {
         log.info(e.getMessage());
-        return responseService.getNullIdResponse();
-    }
-
-    @ExceptionHandler(value = EmptyResultDataAccessException.class)
-    private CommonResponse emptyResultDataAccessException(EmptyResultDataAccessException e) {
-        log.info(e.getMessage());
-        return responseService.getNullIdResponse();
+        return new ArticleResponseDto.NullId();
     }
 
 }
