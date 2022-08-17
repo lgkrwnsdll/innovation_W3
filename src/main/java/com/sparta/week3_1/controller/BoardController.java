@@ -1,50 +1,53 @@
 package com.sparta.week3_1.controller;
 
+import com.sparta.week3_1.ExceptionHandler.CustomException;
 import com.sparta.week3_1.dto.ArticleRequestDto;
-import com.sparta.week3_1.dto.ArticleResponseDto;
+import com.sparta.week3_1.dto.DataResponseDto;
+import com.sparta.week3_1.dto.DatasResponseDto;
 import com.sparta.week3_1.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-@RestController // @Controller + @Responsebody
+import static com.sparta.week3_1.ExceptionHandler.ErrorCode.WRONG_PASSWORD;
+
+@RestController // @Controller + @ResponseBody
 @RequiredArgsConstructor
 @RequestMapping(value = "/posts")
 public class BoardController {
     private final BoardService boardService;
 
-
     @GetMapping()
-    public ArticleResponseDto.Multi getAllPosts() {
-        return new ArticleResponseDto.Multi(true, boardService.getAllPosts(), null);
+    public DatasResponseDto getAllPosts() {
+        return new DatasResponseDto(boardService.getAllPosts());
     }
 
     @GetMapping("/{id}")
-    public ArticleResponseDto.Single getPost(@PathVariable Long id) {
-        return new ArticleResponseDto.Single(true, boardService.getPost(id), null);
+    public DataResponseDto getPost(@PathVariable Long id) {
+        return new DataResponseDto(boardService.getPost(id));
     }
 
     @PostMapping()
-    public ArticleResponseDto.Single writePost(@RequestBody ArticleRequestDto requestDto) {
-        return new ArticleResponseDto.Single(true, boardService.writePost(requestDto), null);
+    public DataResponseDto writePost(@RequestBody ArticleRequestDto requestDto) {
+        return new DataResponseDto(boardService.writePost(requestDto));
     }
 
     @PostMapping("/{id}")
-    public ArticleResponseDto.Single checkPw(@PathVariable Long id, @RequestBody ArticleRequestDto requestDto) {
-        if (requestDto.getPassword() != boardService.getPost(id).getPassword()) { // 불일치
-            return new ArticleResponseDto.Single(false, null, "WRONG_PW");
-        } else { // 일치
-            return new ArticleResponseDto.Single(true, null, null);
+    public DataResponseDto checkPw(@PathVariable Long id, @RequestBody ArticleRequestDto requestDto) {
+        if (requestDto.getPassword() == boardService.getPost(id).getPassword()) { // 일치
+            return new DataResponseDto(null);
+        } else { // 불일치
+            throw new CustomException(WRONG_PASSWORD);
         }
     }
 
     @PutMapping("/{id}")
-    public ArticleResponseDto.Single updatePost(@PathVariable Long id, @RequestBody ArticleRequestDto requestDto) {
-        return new ArticleResponseDto.Single(true, boardService.updatePost(id, requestDto), null);
+    public DataResponseDto updatePost(@PathVariable Long id, @RequestBody ArticleRequestDto requestDto) {
+        return new DataResponseDto(boardService.updatePost(id, requestDto));
     }
 
     @DeleteMapping("/{id}")
-    public ArticleResponseDto.Single deletePost(@PathVariable Long id) {
+    public DataResponseDto deletePost(@PathVariable Long id) {
         boardService.deletePost(id);
-        return new ArticleResponseDto.Single(true, null, null);
+        return new DataResponseDto(null);
     }
 }

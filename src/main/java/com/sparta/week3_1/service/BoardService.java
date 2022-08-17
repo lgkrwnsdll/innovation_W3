@@ -6,6 +6,7 @@ import com.sparta.week3_1.entity.Article;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+//import javax.transaction.Transactional;
 import javax.transaction.Transactional;
 import java.util.List;
 
@@ -15,25 +16,23 @@ public class BoardService {
 
     private final BoardRepository boardRepository;
 
-    @Transactional // SQL 쿼리가 일어나야 함을 스프링에게 알려줌
+//    @Transactional // SQL 쿼리가 일어나야 함을 스프링에게 알려줌 // 연산이 고립되어 다른 연산과의 혼선 방지, 연산이 도중에 실패할 경우 변경사항 커밋되지 않음
     public List<Article> getAllPosts() {
         return boardRepository.findAllByOrderByIdDesc();
     }
 
-    @Transactional
     public Article getPost(Long id) {
         return boardRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("해당 아이디가 존재하지 않습니다.")
         );
     }
 
-    @Transactional
     public Article writePost(ArticleRequestDto requestDto) {
         Article article = new Article(requestDto); // 받아온 dto로 엔티티 생성해 db에 저장
         return boardRepository.save(article);
     }
 
-    @Transactional
+    @Transactional // Update에는 트랙잭션 필수
     public Article updatePost(Long id, ArticleRequestDto requestDto) {
         Article article = boardRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("해당 아이디가 존재하지 않습니다.")
@@ -42,7 +41,6 @@ public class BoardService {
         return article;
     }
 
-    @Transactional
     public void deletePost(Long id) {
         boardRepository.deleteById(id);
     }
