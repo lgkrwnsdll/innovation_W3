@@ -27,11 +27,11 @@ __5. 작성한 코드에서 빈(Bean)을 모두 찾아보세요!__
 
 __6. API 명세서 작성 가이드라인을 검색하여 직접 작성한 명세서와 비교해보세요!__   
 
-| Method  | URL                                    | Request           | Response                                |
-|-----|---------------------------------------|------------------------------------------------------------|------|
-| GET  | /posts | -   |{"success":true,"data":[{"createdAt":"2022-08-16T00:38:46.674701","modifiedAt":"2022-08-16T02:43:32.750165","id":3,"title":"title2","content":"content2","author":"author2"},{"createdAt":"2022-08-16T00:38:45.366157","modifiedAt":"2022-08-16T00:38:45.366157","id":2,"title":"title","content":"content","author":"author"}],"error":null}  |
-| GET  | /posts/{id}   | -           | {"success":true,"data":{"createdAt":"2022-08-16T00:38:45.366157","modifiedAt":"2022-08-16T00:38:45.366157","id":2,"title":"title","content":"content","author":"author"},"error":null} |
-| POST  | /posts    | {"title":"title", "content":"content", "author":"author", "password":1234}    | {"success":true,"data":{"createdAt":"2022-08-16T10:30:57.582101","modifiedAt":"2022-08-16T10:30:57.582101","id":4,"title":"title","content":"content","author":"author"},"error":null} |
-| POST  | /posts/{id}    | {"password":1234} |{"success": true, "data": true, "error": null}  |
-| PUT  | /posts/{id}  | {"title":"title2", "content":"content2", "author":"author2", "password":1234}  | {"success":true,"data":{"createdAt":"2022-08-16T00:38:45.366157","modifiedAt":"2022-08-16T00:38:45.366157","id":2,"title":"title2","content":"content2","author":"author2"},"error":null} |
-| DELETE  | /posts/{id}  | -  |  {"success": true, "data": true, "error": null}|
+| 기능                        | Method  | URL                                    | Request           | Response                                |
+|-----------------------------|-----|---------------------------------------|------------------------------------------------------------|------|
+| 게시글 전체 조회            | GET  | /posts | -   |{"success":true,"data":[{"createdAt":"2022-08-16T00:38:46.674701","modifiedAt":"2022-08-16T02:43:32.750165","id":3,"title":"title2","content":"content2","author":"author2"},{"createdAt":"2022-08-16T00:38:45.366157","modifiedAt":"2022-08-16T00:38:45.366157","id":2,"title":"title","content":"content","author":"author"}],"error":null}  |
+| 게시글 조회                 | GET  | /posts/{id}   | -           | {"success":true,"data":{"createdAt":"2022-08-16T00:38:45.366157","modifiedAt":"2022-08-16T00:38:45.366157","id":2,"title":"title","content":"content","author":"author"},"error":null} |
+| 게시글 등록                  | POST  | /posts    | {"title":"title", "content":"content", "author":"author", "password":1234}    | {"success":true,"data":{"createdAt":"2022-08-16T10:30:57.582101","modifiedAt":"2022-08-16T10:30:57.582101","id":4,"title":"title","content":"content","author":"author"},"error":null} |
+| 비밀번호 확인                  | POST  | /posts/{id}    | {"password":1234} |{"success": true, "data": true, "error": null}  |
+| 게시글 수정              | PUT  | /posts/{id}  | {"title":"title2", "content":"content2", "author":"author2", "password":1234}  | {"success":true,"data":{"createdAt":"2022-08-16T00:38:45.366157","modifiedAt":"2022-08-16T00:38:45.366157","id":2,"title":"title2","content":"content2","author":"author2"},"error":null} |
+| 게시글 삭제                | DELETE  | /posts/{id}  | -  |  {"success": true, "data": true, "error": null}|
