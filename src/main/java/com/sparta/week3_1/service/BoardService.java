@@ -40,7 +40,7 @@ public class BoardService {
         }
     }
 
-    @Transactional // Update에는 트랜잭션 필수
+    @Transactional // update에는 트랜잭션 필수
     public Article updatePost(Long id, ArticleRequestDto requestDto) {
         Article article = boardRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("해당 아이디가 존재하지 않습니다.")
