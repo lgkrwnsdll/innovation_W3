@@ -1,11 +1,16 @@
 package com.sparta.week3_1.dto;
 
-import lombok.AllArgsConstructor;
+import com.sparta.week3_1.ExceptionHandler.ErrorCode;
+import com.sparta.week3_1.entity.Article;
 import lombok.Getter;
 
 @Getter
-@AllArgsConstructor
 public class ExceptionDto {
-    private final String code;
-    private final String message;
+    private final boolean success = false;
+    private final Article data = null;
+    private final ErrorCode error;
+
+    public ExceptionDto(ErrorCode error) {
+        this.error = error;
+    }
 }

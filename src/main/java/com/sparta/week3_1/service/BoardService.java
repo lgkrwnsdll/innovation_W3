@@ -6,7 +6,6 @@ import com.sparta.week3_1.entity.Article;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-//import javax.transaction.Transactional;
 import javax.transaction.Transactional;
 import java.util.List;
 

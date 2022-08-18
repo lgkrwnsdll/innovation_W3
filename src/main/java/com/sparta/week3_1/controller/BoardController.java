@@ -4,9 +4,12 @@ import com.sparta.week3_1.ExceptionHandler.CustomException;
 import com.sparta.week3_1.dto.ArticleRequestDto;
 import com.sparta.week3_1.dto.DataResponseDto;
 import com.sparta.week3_1.dto.DatasResponseDto;
+import com.sparta.week3_1.entity.Article;
 import com.sparta.week3_1.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 import static com.sparta.week3_1.ExceptionHandler.ErrorCode.WRONG_PASSWORD;
 
@@ -18,17 +21,20 @@ public class BoardController {
 
     @GetMapping()
     public DatasResponseDto getAllPosts() {
-        return new DatasResponseDto(boardService.getAllPosts());
+        List<Article> returnData = boardService.getAllPosts();
+        return new DatasResponseDto(returnData);
     }
 
     @GetMapping("/{id}")
     public DataResponseDto getPost(@PathVariable Long id) {
-        return new DataResponseDto(boardService.getPost(id));
+        Article returnData = boardService.getPost(id);
+        return new DataResponseDto(returnData);
     }
 
     @PostMapping()
     public DataResponseDto writePost(@RequestBody ArticleRequestDto requestDto) {
-        return new DataResponseDto(boardService.writePost(requestDto));
+        Article returnData = boardService.writePost(requestDto);
+        return new DataResponseDto(returnData);
     }
 
     @PostMapping("/{id}")
@@ -42,7 +48,8 @@ public class BoardController {
 
     @PutMapping("/{id}")
     public DataResponseDto updatePost(@PathVariable Long id, @RequestBody ArticleRequestDto requestDto) {
-        return new DataResponseDto(boardService.updatePost(id, requestDto));
+        Article returnData = boardService.updatePost(id, requestDto);
+        return new DataResponseDto(returnData);
     }
 
     @DeleteMapping("/{id}")
