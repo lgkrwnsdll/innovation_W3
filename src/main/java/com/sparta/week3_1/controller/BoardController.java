@@ -1,6 +1,5 @@
 package com.sparta.week3_1.controller;
 
-import com.sparta.week3_1.ExceptionHandler.CustomException;
 import com.sparta.week3_1.dto.ArticleRequestDto;
 import com.sparta.week3_1.dto.DataResponseDto;
 import com.sparta.week3_1.dto.DatasResponseDto;
@@ -10,8 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
-import static com.sparta.week3_1.ExceptionHandler.ErrorCode.WRONG_PASSWORD;
 
 @RestController // @Controller + @ResponseBody
 @RequiredArgsConstructor
@@ -39,11 +36,8 @@ public class BoardController {
 
     @PostMapping("/{id}")
     public DataResponseDto checkPw(@PathVariable Long id, @RequestBody ArticleRequestDto requestDto) {
-        if (requestDto.getPassword() == boardService.getPost(id).getPassword()) { // 일치
-            return new DataResponseDto(null);
-        } else { // 불일치
-            throw new CustomException(WRONG_PASSWORD);
-        }
+        boardService.checkPw(id, requestDto);
+        return new DataResponseDto(null);
     }
 
     @PutMapping("/{id}")

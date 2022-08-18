@@ -1,5 +1,6 @@
 package com.sparta.week3_1.service;
 
+import com.sparta.week3_1.ExceptionHandler.CustomException;
 import com.sparta.week3_1.dto.ArticleRequestDto;
 import com.sparta.week3_1.repository.BoardRepository;
 import com.sparta.week3_1.entity.Article;
@@ -8,6 +9,8 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+
+import static com.sparta.week3_1.ExceptionHandler.ErrorCode.WRONG_PASSWORD;
 
 @Service
 @RequiredArgsConstructor
@@ -31,7 +34,13 @@ public class BoardService {
         return boardRepository.save(article);
     }
 
-    @Transactional // Update에는 트랙잭션 필수
+    public void checkPw(Long id, ArticleRequestDto requestDto) {
+        if (requestDto.getPassword() != getPost(id).getPassword()) {
+            throw new CustomException(WRONG_PASSWORD);
+        }
+    }
+
+    @Transactional // Update에는 트랜잭션 필수
     public Article updatePost(Long id, ArticleRequestDto requestDto) {
         Article article = boardRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("해당 아이디가 존재하지 않습니다.")
