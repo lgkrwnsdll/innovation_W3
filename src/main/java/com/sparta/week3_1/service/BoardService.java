@@ -1,5 +1,6 @@
 package com.sparta.week3_1.service;
 
+import com.sparta.week3_1.ExceptionHandler.CustomException;
 import com.sparta.week3_1.dto.ArticleRequestDto;
 import com.sparta.week3_1.repository.BoardRepository;
 import com.sparta.week3_1.entity.Article;
@@ -8,6 +9,8 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+
+import static com.sparta.week3_1.ExceptionHandler.ErrorCode.WRONG_PASSWORD;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +32,12 @@ public class BoardService {
     public Article writePost(ArticleRequestDto requestDto) {
         Article article = new Article(requestDto); // 받아온 dto로 엔티티 생성해 db에 저장
         return boardRepository.save(article);
+    }
+
+    public void checkPw(Long id, ArticleRequestDto requestDto) {
+        if (requestDto.getPassword() != getPost(id).getPassword()) {
+            throw new CustomException(WRONG_PASSWORD);
+        }
     }
 
     @Transactional // Update에는 트랙잭션 필수
