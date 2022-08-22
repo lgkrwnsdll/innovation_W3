@@ -7,12 +7,12 @@ import lombok.Getter;
 import java.util.List;
 
 @Getter
-public class DatasResponseDto {
+public class ArticleResponseDtoList {
     private final boolean success = true;
     private final List<Article> data;
     private final ErrorCode error = null;
 
-    public DatasResponseDto(List<Article> data) {
+    public ArticleResponseDtoList(List<Article> data) {
         this.data = data;
     }
 }

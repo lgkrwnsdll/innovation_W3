@@ -1,16 +1,16 @@
 package com.sparta.week3_1.dto;
 
 import com.sparta.week3_1.ExceptionHandler.ErrorCode;
-import com.sparta.week3_1.entity.Article;
+import com.sparta.week3_1.model.User;
 import lombok.Getter;
 
 @Getter
-public class DataResponseDto {
+public class UserResponseDto {
     private final boolean success = true;
-    private final Article data;
+    private final User data;
     private final ErrorCode error = null;
 
-    public DataResponseDto(Article data) {
-        this.data = data;
+    public UserResponseDto(User user) {
+        this.data = user;
     }
 }
