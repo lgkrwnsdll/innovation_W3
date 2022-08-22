@@ -18,7 +18,7 @@ public class BoardService {
 
     private final BoardRepository boardRepository;
 
-    //@Transactional // SQL 쿼리가 일어나야 함을 스프링에게 알려줌 // 연산이 고립되어 다른 연산과의 혼선 방지, 연산이 도중에 실패할 경우 변경사항 커밋되지 않음
+//    @Transactional // SQL 쿼리가 일어나야 함을 스프링에게 알려줌 // 연산이 고립되어 다른 연산과의 혼선 방지, 연산이 도중에 실패할 경우 변경사항 커밋되지 않음
     public List<Article> getAllPosts() {
         return boardRepository.findAllByOrderByIdDesc();
     }
