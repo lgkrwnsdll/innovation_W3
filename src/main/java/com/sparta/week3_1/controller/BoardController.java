@@ -43,14 +43,14 @@ public class BoardController {
     //    return new ArticleResponseDto(null);
     //}
 
-    @PutMapping("/{id}/auth")
+    @PutMapping("/auth/{id}")
     public ArticleResponseDto updatePost(@PathVariable Long id, @RequestBody ArticleRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         String nickname = userDetails.getUser().getNickname();
         Article returnData = boardService.updatePost(id, requestDto, nickname);
         return new ArticleResponseDto(returnData);
     }
 
-    @DeleteMapping("/{id}/auth")
+    @DeleteMapping("/auth/{id}")
     public ArticleResponseDto deletePost(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         String nickname = userDetails.getUser().getNickname();
         boardService.deletePost(id, nickname);

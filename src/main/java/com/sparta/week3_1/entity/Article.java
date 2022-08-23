@@ -15,7 +15,7 @@ import java.util.List;
 public class Article extends Timestamped {
 
     @Id // primary key
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // id 값 1부터 생성
     private Long id;
     @Column(nullable = false) // 컬럼 값이고 반드시 값이 존재해야 함을 나타냅니다.
     private String title;
@@ -31,7 +31,7 @@ public class Article extends Timestamped {
     @Column(nullable = false)
     private String author;
 
-    @OneToMany(mappedBy = "article", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "article", cascade = CascadeType.REMOVE) // cascade 설정으로 게시글 삭제 시, 댓글 모두 삭제
     private List<Comment> comments = new ArrayList<Comment>();
 
     public Article(ArticleRequestDto requestDto, String author) {
