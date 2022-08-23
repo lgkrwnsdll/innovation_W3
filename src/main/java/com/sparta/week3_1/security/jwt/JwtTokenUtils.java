@@ -13,10 +13,11 @@ public final class JwtTokenUtils {
     private static final int HOUR = 60 * MINUTE;
     private static final int DAY = 24 * HOUR;
 
-    // JWT 토큰의 유효기간: 3일 (단위: seconds)
-    private static final int JWT_TOKEN_VALID_SEC = 3 * DAY;
-    // JWT 토큰의 유효기간: 3일 (단위: milliseconds)
-    private static final int JWT_TOKEN_VALID_MILLI_SEC = JWT_TOKEN_VALID_SEC * 1000;
+    private static final int ACCESS_TOKEN_VALID_SEC = 30 * MINUTE;
+    private static final int REFRESH_TOKEN_VALID_SEC = 14 * DAY;
+
+    private static final int ACCESS_TOKEN_VALID_MILLI_SEC = ACCESS_TOKEN_VALID_SEC * 1000;
+    private static final int REFRESH_TOKEN_VALID_MILLI_SEC = REFRESH_TOKEN_VALID_SEC * 1000;
 
     public static final String CLAIM_EXPIRED_DATE = "EXPIRED_DATE";
     public static final String CLAIM_USER_NAME = "USER_NAME";
@@ -29,7 +30,7 @@ public final class JwtTokenUtils {
                     .withIssuer("sparta")
                     .withClaim(CLAIM_USER_NAME, userDetails.getUsername())
                      // 토큰 만료 일시 = 현재 시간 + 토큰 유효기간)
-                    .withClaim(CLAIM_EXPIRED_DATE, new Date(System.currentTimeMillis() + JWT_TOKEN_VALID_MILLI_SEC))
+                    .withClaim(CLAIM_EXPIRED_DATE, new Date(System.currentTimeMillis() + ACCESS_TOKEN_VALID_MILLI_SEC))
                     .sign(generateAlgorithm());
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -38,12 +39,12 @@ public final class JwtTokenUtils {
         return token;
     }
 
-    public static String generateRefreshToken(UserDetailsImpl userDetails) {
+    public static String generateRefreshToken() {
         try {
             token = JWT.create()
                     .withIssuer("sparta")
-                    .withClaim(CLAIM_USER_NAME, userDetails.getUsername())
-                    .withClaim(CLAIM_EXPIRED_DATE, new Date(System.currentTimeMillis() + JWT_TOKEN_VALID_MILLI_SEC))
+                    //.withClaim(CLAIM_USER_NAME, userDetails.getUsername())
+                    .withClaim(CLAIM_EXPIRED_DATE, new Date(System.currentTimeMillis() + REFRESH_TOKEN_VALID_MILLI_SEC))
                     .sign(generateAlgorithm());
         } catch (Exception e) {
             System.out.println(e.getMessage());

@@ -18,7 +18,7 @@ public class LoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessH
         // Token 생성
         final String accessToken = JwtTokenUtils.generateAccessToken(userDetails);
         response.addHeader(ACCESS_TOKEN_HEADER, "BEARER " + accessToken);
-        final String refreshToken = JwtTokenUtils.generateRefreshToken(userDetails);
+        final String refreshToken = JwtTokenUtils.generateRefreshToken();
         response.addHeader(REFRESH_TOKEN_HEADER, refreshToken);
     }
 

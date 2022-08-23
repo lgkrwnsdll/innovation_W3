@@ -1,5 +1,6 @@
 package com.sparta.week3_1.service;
 
+import com.sparta.week3_1.ExceptionHandler.CustomException;
 import com.sparta.week3_1.dto.LoginRequestDto;
 import com.sparta.week3_1.dto.SignupRequestDto;
 import com.sparta.week3_1.model.User;
@@ -16,6 +17,9 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.Optional;
+import java.util.regex.Pattern;
+
+import static com.sparta.week3_1.ExceptionHandler.ErrorCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -31,12 +35,19 @@ public class UserService {
 
         // 비밀번호 일치 확인
         if (!passwordConfirm.equals(password)) {
-            throw new IllegalArgumentException("비밀번호를 확인해주세요.");
+            throw new CustomException(WRONG_PASSWORD);
         }
         // 회원 ID 중복 확인
         Optional<User> found = userRepository.findByNickname(nickname);
         if (found.isPresent()) {
-            throw new IllegalArgumentException("중복된 사용자 ID 가 존재합니다.");
+            throw new CustomException(DUPLICATE_ID);
+        }
+        // ID, PW 구성 조건 확인
+        String idPattern = "^[a-zA-Z0-9]{4,12}$";
+        String pwPattern = "^[a-z0-9]{4,32}$";
+
+        if(!Pattern.matches(idPattern, nickname) || !Pattern.matches(pwPattern, password)) {
+            throw new CustomException(WRONG_FORM);
         }
 
         // 비밀번호 암호화

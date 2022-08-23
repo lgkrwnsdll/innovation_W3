@@ -11,6 +11,12 @@ import static com.fasterxml.jackson.annotation.JsonFormat.Shape.*;
 @Getter
 public enum ErrorCode {
 
+    //아이디, 비밀번호 형식 오류
+    WRONG_FORM("WRONG_FORM", "Wrong Form"),
+
+    //아이디 중복
+    DUPLICATE_ID("DUPLICATE_ID", "Duplicate ID"),
+
     //비밀번호 불일치
     WRONG_PASSWORD("WRONG_PASSWORD", "Wrong Password"),
 
@@ -18,7 +24,7 @@ public enum ErrorCode {
     NULL_ID("NULL_ID", "Id Doesn't Exist"),
 
     //권한 없음
-    NO_AUTHORITY("NO_AUTHORITY", "Not Allowed To Update");
+    NO_AUTHORITY("NO_AUTHORITY", "Unauthorized Or No Token");
 
     private final String code;
     private final String message;

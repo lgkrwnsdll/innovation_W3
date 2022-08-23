@@ -1,5 +1,6 @@
 package com.sparta.week3_1.security.filter;
 
+import com.sparta.week3_1.ExceptionHandler.CustomException;
 import com.sparta.week3_1.security.jwt.HeaderTokenExtractor;
 import com.sparta.week3_1.security.jwt.JwtPreProcessingToken;
 import org.springframework.security.core.Authentication;
@@ -14,6 +15,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+
+import static com.sparta.week3_1.ExceptionHandler.ErrorCode.NO_AUTHORITY;
 
 /**
  * Token 을 내려주는 Filter 가 아닌  client 에서 받아지는 Token 을 서버 사이드에서 검증하는 클레스 SecurityContextHolder 보관소에 해당
@@ -35,19 +38,24 @@ public class JwtAuthFilter extends AbstractAuthenticationProcessingFilter {
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException {
 
-        // JWT 값을 담아주는 변수 TokenPayload
-        String tokenPayload = request.getHeader("Authorization");
-        if (tokenPayload == null) {
+        String accessToken = request.getHeader("Authorization");
+        if (accessToken == null) {
             response.sendRedirect("/users/login");
             return null;
         }
 
-        JwtPreProcessingToken jwtToken = new JwtPreProcessingToken(
-                extractor.extract(tokenPayload, request));
+        String refreshToken = request.getHeader("refresh-token");
+        if (refreshToken == null) {
+            response.sendRedirect("/users/login");
+            return null;
+        }
+
+        JwtPreProcessingToken extractedAccessToken = new JwtPreProcessingToken(
+                extractor.extract(accessToken, request));
 
         return super
                 .getAuthenticationManager()
-                .authenticate(jwtToken);
+                .authenticate(extractedAccessToken);
     }
 
     @Override
