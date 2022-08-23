@@ -41,11 +41,15 @@ public class BoardService {
     //}
 
     @Transactional // update에는 트랜잭션 필수
-    public Article updatePost(Long id, ArticleRequestDto requestDto) {
+    public Article updatePost(Long id, ArticleRequestDto requestDto, String author) {
         Article article = boardRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("해당 아이디가 존재하지 않습니다.")
         );
-        article.update(requestDto);
+        if (author.equals(article.getAuthor())) {
+            article.update(requestDto);
+        } else {
+            throw new CustomException(NO_AUTHORITY);
+        }
         return article;
     }
 

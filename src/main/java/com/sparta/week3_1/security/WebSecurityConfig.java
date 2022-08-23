@@ -105,11 +105,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         skipPathList.add("POST,/h2-console/**");
 
         // 회원 관리 API 허용
-        skipPathList.add("GET,/user/**");
         skipPathList.add("POST,/users/signup");
         skipPathList.add("POST,/users/login");
 
-        //skipPathList.add("GET,/posts");
+        // 게시글 조회 API 허용
+        skipPathList.add("GET,/posts/**");
 
 
         FilterSkipMatcher matcher = new FilterSkipMatcher(

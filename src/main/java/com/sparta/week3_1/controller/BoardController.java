@@ -45,7 +45,8 @@ public class BoardController {
 
     @PutMapping("/{id}/auth")
     public ArticleResponseDto updatePost(@PathVariable Long id, @RequestBody ArticleRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        Article returnData = boardService.updatePost(id, requestDto);
+        String nickname = userDetails.getUser().getNickname();
+        Article returnData = boardService.updatePost(id, requestDto, nickname);
         return new ArticleResponseDto(returnData);
     }
 
