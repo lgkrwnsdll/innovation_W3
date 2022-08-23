@@ -4,15 +4,13 @@ import com.sparta.week3_1.dto.LoginRequestDto;
 import com.sparta.week3_1.dto.SignupRequestDto;
 import com.sparta.week3_1.model.User;
 import com.sparta.week3_1.repository.UserRepository;
-import com.sparta.week3_1.security.JwtTokenUtils;
+import com.sparta.week3_1.security.jwt.JwtTokenUtils;
 import com.sparta.week3_1.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -22,10 +20,6 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class UserService {
-
-    public static final String ACCESS_TOKEN_HEADER = "Authorization";
-    public static final String REFRESH_TOKEN_HEADER = "refresh-token";
-    public static final String TOKEN_TYPE = "BEARER";
 
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
@@ -53,19 +47,19 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public User login(LoginRequestDto requestDto, HttpServletResponse response) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(requestDto.getNickname(), requestDto.getPassword()));
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        UserDetailsImpl principal = (UserDetailsImpl) authentication.getPrincipal();
-
-        final String accessToken = JwtTokenUtils.generateAccessToken(principal);
-        response.addHeader(ACCESS_TOKEN_HEADER, TOKEN_TYPE + " " + accessToken);
-        final String refreshToken = JwtTokenUtils.generateRefreshToken(principal);
-        response.addHeader(REFRESH_TOKEN_HEADER, refreshToken);
-
-        return principal.getUser();
-    }
+    //public User login(LoginRequestDto requestDto, HttpServletResponse response) {
+    //    Authentication authentication = authenticationManager.authenticate(
+    //            new UsernamePasswordAuthenticationToken(requestDto.getNickname(), requestDto.getPassword()));
+    //
+    //    SecurityContextHolder.getContext().setAuthentication(authentication);
+    //
+    //    UserDetailsImpl principal = (UserDetailsImpl) authentication.getPrincipal();
+    //
+    //    final String accessToken = JwtTokenUtils.generateAccessToken(principal);
+    //    response.addHeader(ACCESS_TOKEN_HEADER, "BEARER " + accessToken);
+    //    final String refreshToken = JwtTokenUtils.generateRefreshToken(principal);
+    //    response.addHeader(REFRESH_TOKEN_HEADER, refreshToken);
+    //
+    //    return principal.getUser();
+    //}
 }

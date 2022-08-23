@@ -15,7 +15,10 @@ public enum ErrorCode {
     WRONG_PASSWORD("WRONG_PASSWORD", "Wrong Password"),
 
     //NULL_ID
-    NULL_ID("NULL_ID", "Id Doesn't Exist");
+    NULL_ID("NULL_ID", "Id Doesn't Exist"),
+
+    //권한 없음
+    NO_AUTHORITY("NO_AUTHORITY", "Not Allowed To Update");
 
     private final String code;
     private final String message;

@@ -1,6 +1,5 @@
 package com.sparta.week3_1.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sparta.week3_1.dto.ArticleRequestDto;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -20,25 +19,30 @@ public class Article extends Timestamped {
     private String title;
     @Column(nullable = false)
     private String content;
+
+    //@Column(nullable = false)
+    //private String author;
+    //@Column(nullable = false)
+    //@JsonIgnore // 응답에 해당 데이터 포함하지 않음
+    //private int password;
+
     @Column(nullable = false)
     private String author;
-    @Column(nullable = false)
-    @JsonIgnore // 응답에 해당 데이터 포함하지 않음
-    private int password;
 
 
-    public Article(ArticleRequestDto requestDto) {
+    public Article(ArticleRequestDto requestDto, String author) {
+        this.author = author;
         this.title = requestDto.getTitle();
         this.content = requestDto.getContent();
-        this.author = requestDto.getAuthor();
-        this.password = requestDto.getPassword();
+        //this.author = requestDto.getAuthor();
+        //this.password = requestDto.getPassword();
     }
 
     public void update(ArticleRequestDto requestDto) {
         this.title = requestDto.getTitle();
         this.content = requestDto.getContent();
-        this.author = requestDto.getAuthor();
-        this.password = requestDto.getPassword();
+        //this.author = requestDto.getAuthor();
+        //this.password = requestDto.getPassword();
     }
 
 }

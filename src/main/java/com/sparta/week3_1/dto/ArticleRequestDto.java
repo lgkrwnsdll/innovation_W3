@@ -13,8 +13,8 @@ public class ArticleRequestDto { // 테이블의 데이터에 접근할 때의 �
 
     private String content;
 
-    private String author;
-
-    private int password;
+    //private String author;
+    //
+    //private int password;
 
 }

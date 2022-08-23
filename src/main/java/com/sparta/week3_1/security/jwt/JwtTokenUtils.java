@@ -1,4 +1,4 @@
-package com.sparta.week3_1.security;
+package com.sparta.week3_1.security.jwt;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
