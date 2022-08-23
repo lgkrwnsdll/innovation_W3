@@ -1,6 +1,8 @@
 package com.sparta.week3_1.security.filter;
 
 import com.sparta.week3_1.ExceptionHandler.CustomException;
+import com.sparta.week3_1.entity.RefreshToken;
+import com.sparta.week3_1.repository.RefreshTokenRepository;
 import com.sparta.week3_1.security.jwt.HeaderTokenExtractor;
 import com.sparta.week3_1.security.jwt.JwtPreProcessingToken;
 import org.springframework.security.core.Authentication;
@@ -16,7 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static com.sparta.week3_1.ExceptionHandler.ErrorCode.NO_AUTHORITY;
+import static com.sparta.week3_1.ExceptionHandler.ErrorCode.INVALIDATE_TOKEN;
 
 /**
  * Token 을 내려주는 Filter 가 아닌  client 에서 받아지는 Token 을 서버 사이드에서 검증하는 클레스 SecurityContextHolder 보관소에 해당
@@ -25,29 +27,32 @@ import static com.sparta.week3_1.ExceptionHandler.ErrorCode.NO_AUTHORITY;
 public class JwtAuthFilter extends AbstractAuthenticationProcessingFilter {
 
     private final HeaderTokenExtractor extractor;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     public JwtAuthFilter(
             RequestMatcher requiresAuthenticationRequestMatcher,
-            HeaderTokenExtractor extractor
+            HeaderTokenExtractor extractor,
+            RefreshTokenRepository refreshTokenRepository
     ) {
         super(requiresAuthenticationRequestMatcher);
 
         this.extractor = extractor;
+        this.refreshTokenRepository = refreshTokenRepository;
     }
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException {
 
         String accessToken = request.getHeader("Authorization");
-        if (accessToken == null) {
+        String refreshToken = request.getHeader("refresh-token");
+        if (accessToken == null || refreshToken == null) {
             response.sendRedirect("/users/login");
             return null;
         }
 
-        String refreshToken = request.getHeader("refresh-token");
-        if (refreshToken == null) {
-            response.sendRedirect("/users/login");
-            return null;
+        RefreshToken originalRefreshToken = refreshTokenRepository.findByRefreshToken(refreshToken);
+        if (originalRefreshToken == null) {
+            throw new CustomException(INVALIDATE_TOKEN);
         }
 
         JwtPreProcessingToken extractedAccessToken = new JwtPreProcessingToken(

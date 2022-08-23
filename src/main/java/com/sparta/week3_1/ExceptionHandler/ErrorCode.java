@@ -20,11 +20,14 @@ public enum ErrorCode {
     //비밀번호 불일치
     WRONG_PASSWORD("WRONG_PASSWORD", "Wrong Password"),
 
-    //NULL_ID
+    //요청 위치에 리소스 없음
     NULL_ID("NULL_ID", "Id Doesn't Exist"),
 
-    //권한 없음
-    NO_AUTHORITY("NO_AUTHORITY", "Unauthorized Or No Token");
+    //유효하지 않은 토큰
+    INVALIDATE_TOKEN("INVALIDATE_TOKEN", "Unauthorized or No Token"),
+
+    //유저의 권한 없는 요청
+    NOT_ALLOWED("NOT_ALLOWED", "Only The Writer Is Allowed");
 
     private final String code;
     private final String message;

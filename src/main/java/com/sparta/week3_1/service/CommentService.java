@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.List;
 
-import static com.sparta.week3_1.ExceptionHandler.ErrorCode.NO_AUTHORITY;
+import static com.sparta.week3_1.ExceptionHandler.ErrorCode.NOT_ALLOWED;
 
 @Service
 @RequiredArgsConstructor
@@ -41,7 +41,7 @@ public class CommentService {
         if (author.equals(comment.getAuthor())) {
             comment.update(requestDto);
         } else {
-            throw new CustomException(NO_AUTHORITY);
+            throw new CustomException(NOT_ALLOWED);
         }
         return comment;
     }
@@ -53,7 +53,7 @@ public class CommentService {
         if (author.equals(comment.getAuthor())) {
             commentRepository.deleteById(id);
         } else {
-            throw new CustomException(NO_AUTHORITY);
+            throw new CustomException(NOT_ALLOWED);
         }
     }
 }

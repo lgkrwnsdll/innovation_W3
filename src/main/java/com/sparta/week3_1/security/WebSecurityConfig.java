@@ -1,5 +1,6 @@
 package com.sparta.week3_1.security;
 
+import com.sparta.week3_1.repository.RefreshTokenRepository;
 import com.sparta.week3_1.security.filter.LoginFilter;
 import com.sparta.week3_1.security.jwt.HeaderTokenExtractor;
 import com.sparta.week3_1.security.provider.LoginAuthProvider;
@@ -26,13 +27,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final JWTAuthProvider jwtAuthProvider;
     private final HeaderTokenExtractor headerTokenExtractor;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     public WebSecurityConfig(
             JWTAuthProvider jwtAuthProvider,
-            HeaderTokenExtractor headerTokenExtractor
+            HeaderTokenExtractor headerTokenExtractor,
+            RefreshTokenRepository refreshTokenRepository
     ) {
         this.jwtAuthProvider = jwtAuthProvider;
         this.headerTokenExtractor = headerTokenExtractor;
+        this.refreshTokenRepository = refreshTokenRepository;
     }
 
     @Override
@@ -80,16 +84,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public LoginFilter LoginFilter() throws Exception {
-        LoginFilter formLoginFilter = new LoginFilter(authenticationManager());
-        formLoginFilter.setFilterProcessesUrl("/users/login");
-        formLoginFilter.setAuthenticationSuccessHandler(LoginSuccessHandler());
-        formLoginFilter.afterPropertiesSet();
-        return formLoginFilter;
+        LoginFilter loginFilter = new LoginFilter(authenticationManager());
+        loginFilter.setFilterProcessesUrl("/users/login");
+        loginFilter.setAuthenticationSuccessHandler(LoginSuccessHandler());
+        loginFilter.afterPropertiesSet();
+        return loginFilter;
     }
 
     @Bean
     public LoginSuccessHandler LoginSuccessHandler() {
-        return new LoginSuccessHandler();
+        return new LoginSuccessHandler(refreshTokenRepository);
     }
 
     @Bean
@@ -122,7 +126,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         JwtAuthFilter filter = new JwtAuthFilter(
                 matcher,
-                headerTokenExtractor
+                headerTokenExtractor,
+                refreshTokenRepository
         );
         filter.setAuthenticationManager(super.authenticationManagerBean());
 
