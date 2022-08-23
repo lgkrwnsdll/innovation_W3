@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED) // 기본 생성자 생성, 접근 권한 protected 지정
 @Entity // DB 테이블 역할
@@ -13,7 +15,7 @@ import javax.persistence.*;
 public class Article extends Timestamped {
 
     @Id // primary key
-    @GeneratedValue(strategy = GenerationType.AUTO) // 자동 증가 명령입니다.
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false) // 컬럼 값이고 반드시 값이 존재해야 함을 나타냅니다.
     private String title;
@@ -29,6 +31,8 @@ public class Article extends Timestamped {
     @Column(nullable = false)
     private String author;
 
+    @OneToMany(mappedBy = "article", cascade = CascadeType.REMOVE)
+    private List<Comment> comments = new ArrayList<Comment>();
 
     public Article(ArticleRequestDto requestDto, String author) {
         this.author = author;
@@ -46,3 +50,5 @@ public class Article extends Timestamped {
     }
 
 }
+
+
