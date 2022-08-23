@@ -23,7 +23,6 @@ public class UserService {
 
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
-    private final AuthenticationManager authenticationManager;
 
     public User signup(SignupRequestDto requestDto) {
         String nickname = requestDto.getNickname();
