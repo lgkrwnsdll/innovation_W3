@@ -1,21 +1,13 @@
 package com.sparta.week3_1.service;
 
 import com.sparta.week3_1.ExceptionHandler.CustomException;
-import com.sparta.week3_1.dto.LoginRequestDto;
 import com.sparta.week3_1.dto.SignupRequestDto;
 import com.sparta.week3_1.model.User;
 import com.sparta.week3_1.repository.UserRepository;
-import com.sparta.week3_1.security.jwt.JwtTokenUtils;
-import com.sparta.week3_1.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletResponse;
 import java.util.Optional;
 import java.util.regex.Pattern;
 

@@ -2,7 +2,8 @@ package com.sparta.week3_1.security;
 
 import com.sparta.week3_1.entity.RefreshToken;
 import com.sparta.week3_1.repository.RefreshTokenRepository;
-import com.sparta.week3_1.security.jwt.JwtTokenUtils;
+import com.sparta.week3_1.security.provider.JwtProvider;
+import io.jsonwebtoken.Jwt;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
@@ -15,6 +16,8 @@ public class LoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessH
     public static final String ACCESS_TOKEN_HEADER = "Authorization";
     public static final String REFRESH_TOKEN_HEADER = "refresh-token";
 
+    private final JwtProvider jwtProvider;
+
     private final RefreshTokenRepository refreshTokenRepository;
 
     @Override
@@ -22,9 +25,9 @@ public class LoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessH
                                         final Authentication authentication) {
         final UserDetailsImpl userDetails = ((UserDetailsImpl) authentication.getPrincipal());
         // Token 생성 및 반환
-        final String accessToken = JwtTokenUtils.generateAccessToken(userDetails);
+        final String accessToken = jwtProvider.generateAccessToken(authentication);
         response.addHeader(ACCESS_TOKEN_HEADER, "BEARER " + accessToken);
-        final String refreshToken = JwtTokenUtils.generateRefreshToken();
+        final String refreshToken = jwtProvider.generateRefreshToken();
         response.addHeader(REFRESH_TOKEN_HEADER, refreshToken);
         // Refresh Token 저장
         refreshTokenRepository.save(new RefreshToken(userDetails.getUsername(), refreshToken));

@@ -1,15 +1,9 @@
 package com.sparta.week3_1.security.filter;
 
-import com.sparta.week3_1.ExceptionHandler.CustomException;
-import com.sparta.week3_1.security.jwt.HeaderTokenExtractor;
-import com.sparta.week3_1.security.jwt.JwtPreProcessingToken;
-import com.sparta.week3_1.service.RefreshTokenService;
+import com.sparta.week3_1.security.provider.JwtProvider;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
-import org.springframework.security.web.util.matcher.RequestMatcher;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -17,90 +11,44 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static com.sparta.week3_1.ExceptionHandler.ErrorCode.INVALID_TOKEN;
+public class JwtAuthFilter extends OncePerRequestFilter {
 
-/**
- * Token 을 내려주는 Filter 가 아닌  client 에서 받아지는 Token 을 서버 사이드에서 검증하는 클레스 SecurityContextHolder 보관소에 해당
- * Token 값의 인증 상태를 보관 하고 필요할때 마다 인증 확인 후 권한 상태 확인 하는 기능
- */
-public class JwtAuthFilter extends AbstractAuthenticationProcessingFilter {
+    private final JwtProvider jwtProvider;
 
-    private final HeaderTokenExtractor extractor;
-    private final RefreshTokenService refreshTokenService;
-
-    public JwtAuthFilter(
-            RequestMatcher requiresAuthenticationRequestMatcher,
-            HeaderTokenExtractor extractor,
-            RefreshTokenService refreshTokenService
-    ) {
-        super(requiresAuthenticationRequestMatcher);
-
-        this.extractor = extractor;
-        this.refreshTokenService = refreshTokenService;
+    public JwtAuthFilter(JwtProvider jwtProvider) {
+        this.jwtProvider = jwtProvider;
     }
 
     @Override
-    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
+        try {
+            String jwt = getJwtFromRequest(request); //request에서 jwt 토큰을 꺼낸다.
+            if (jwt != null && jwtProvider.validateToken(jwt)) {
+                Authentication auth = jwtProvider.getAuthentication(jwt);
+                // 정상 토큰이면 토큰을 통해 생성한 Authentication 객체를 SecurityContext에 저장 -> Controller에서 @AuthenticationPrincipal로 받아올 수 있음
+                SecurityContextHolder.getContext().setAuthentication(auth);
+            } else {
+                if (jwt != null) {
+                    request.setAttribute("unauthorization", "401 인증키 없음.");
+                }
 
-        // 요청 헤더에 토큰 존재 여부 확인
-        String accessToken = request.getHeader("Authorization");
-        String refreshToken = request.getHeader("refresh-token");
-        if (accessToken == null || refreshToken == null) {
-            throw new CustomException(INVALID_TOKEN);
+                if (jwtProvider.validateToken(jwt)) {
+                    request.setAttribute("unauthorization", "401-001 인증키 만료.");
+                }
+            }
+        } catch (Exception ex) {
+            logger.error("Could not set user authentication in security context", ex);
         }
 
-        // refresh token 검증 (RefreshTokenService에 위임)
-        refreshTokenService.checkToken(refreshToken);
-
-        JwtPreProcessingToken extractedAccessToken = new JwtPreProcessingToken(
-                extractor.extract(accessToken, request));
-
-        // access token 검증 (JWTAuthProvider에 위임)
-        return super
-                .getAuthenticationManager()
-                .authenticate(extractedAccessToken);
+        filterChain.doFilter(request, response);
     }
 
-    @Override
-    protected void successfulAuthentication(
-            HttpServletRequest request,
-            HttpServletResponse response,
-            FilterChain chain,
-            Authentication authResult
-    ) throws IOException, ServletException {
-        /*
-         *  SecurityContext 사용자 Token 저장소를 생성합니다.
-         *  SecurityContext 에 사용자의 인증된 Token 값을 저장합니다.
-         */
-        SecurityContext context = SecurityContextHolder.createEmptyContext();
-
-        context.setAuthentication(authResult);
-        SecurityContextHolder.setContext(context); // 인증 성공 정보를 SecurityContextHolder에 담아 이후 UsernamePasswordAuthenticationFilter도 통과
-
-        // FilterChain chain 해당 필터가 실행 후 다른 필터도 실행할 수 있도록 연결실켜주는 메서드
-        chain.doFilter(
-                request,
-                response
-        );
-    }
-
-    @Override
-    protected void unsuccessfulAuthentication(
-            HttpServletRequest request,
-            HttpServletResponse response,
-            AuthenticationException failed
-    ) throws IOException, ServletException {
-        /*
-         *	로그인을 한 상태에서 Token값을 주고받는 상황에서 잘못된 Token값이라면
-         *	인증이 성공하지 못한 단계 이기 때문에 잘못된 Token값을 제거합니다.
-         *	모든 인증받은 Context 값이 삭제 됩니다.
-         */
-        SecurityContextHolder.clearContext();
-
-        super.unsuccessfulAuthentication(
-                request,
-                response,
-                failed
-        );
+    private String getJwtFromRequest(HttpServletRequest request) {
+        String bearerToken = request.getHeader("Authorization");
+        if (bearerToken != null && bearerToken.startsWith("BEARER ")) {
+            return bearerToken.substring("BEARER ".length());
+        }
+        return null;
     }
 }
