@@ -1,7 +1,7 @@
 package com.sparta.week3_1.dto;
 
 import com.sparta.week3_1.ExceptionHandler.ErrorCode;
-import com.sparta.week3_1.model.User;
+import com.sparta.week3_1.entity.User;
 import lombok.Getter;
 
 @Getter

@@ -1,6 +1,6 @@
 package com.sparta.week3_1.repository;
 
-import com.sparta.week3_1.model.User;
+import com.sparta.week3_1.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

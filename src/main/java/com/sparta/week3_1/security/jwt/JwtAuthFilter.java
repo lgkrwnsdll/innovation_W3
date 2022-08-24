@@ -1,6 +1,5 @@
-package com.sparta.week3_1.security.filter;
+package com.sparta.week3_1.security.jwt;
 
-import com.sparta.week3_1.security.provider.JwtProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;

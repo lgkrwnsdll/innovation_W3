@@ -1,6 +1,6 @@
 package com.sparta.week3_1.security;
 
-import com.sparta.week3_1.model.User;
+import com.sparta.week3_1.entity.User;
 import com.sparta.week3_1.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;

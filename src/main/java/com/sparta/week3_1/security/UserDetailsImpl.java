@@ -1,6 +1,6 @@
 package com.sparta.week3_1.security;
 
-import com.sparta.week3_1.model.User;
+import com.sparta.week3_1.entity.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 

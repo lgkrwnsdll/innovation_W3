@@ -1,7 +1,6 @@
-package com.sparta.week3_1.model;
+package com.sparta.week3_1.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.sparta.week3_1.entity.Timestamped;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

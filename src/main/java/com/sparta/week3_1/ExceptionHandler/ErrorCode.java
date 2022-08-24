@@ -18,7 +18,10 @@ public enum ErrorCode {
     DUPLICATE_ID("DUPLICATE_ID", "Duplicate ID"),
 
     //비밀번호 불일치
-    WRONG_PASSWORD("WRONG_PASSWORD", "Wrong Password"),
+    WRONG_PASSWORD_CONFIRM("WRONG_PASSWORD_CONFIRM", "Wrong Password Confirm"),
+
+    //사용자 찾을 수 없음
+    NO_USER("NO_USER", "Cannot Find User"),
 
     //요청 위치에 리소스 없음
     NULL_ID("NULL_ID", "Id Doesn't Exist"),

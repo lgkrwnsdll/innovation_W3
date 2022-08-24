@@ -1,4 +1,4 @@
-package com.sparta.week3_1.security;
+package com.sparta.week3_1.security.jwt;
 
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;

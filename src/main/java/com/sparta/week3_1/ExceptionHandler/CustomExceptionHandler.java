@@ -1,7 +1,5 @@
 package com.sparta.week3_1.ExceptionHandler;
 
-import com.auth0.jwt.exceptions.JWTDecodeException;
-import com.auth0.jwt.exceptions.SignatureVerificationException;
 import com.sparta.week3_1.dto.ExceptionDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,8 +7,6 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-
-import static com.sparta.week3_1.ExceptionHandler.ErrorCode.INVALID_TOKEN;
 import static com.sparta.week3_1.ExceptionHandler.ErrorCode.NULL_ID;
 
 @Slf4j

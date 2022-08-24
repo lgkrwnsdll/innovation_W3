@@ -1,13 +1,17 @@
 package com.sparta.week3_1.service;
 
 import com.sparta.week3_1.ExceptionHandler.CustomException;
+import com.sparta.week3_1.dto.LoginRequestDto;
 import com.sparta.week3_1.dto.SignupRequestDto;
-import com.sparta.week3_1.model.User;
+import com.sparta.week3_1.dto.TokenDto;
+import com.sparta.week3_1.entity.User;
 import com.sparta.week3_1.repository.UserRepository;
+import com.sparta.week3_1.security.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
@@ -17,6 +21,7 @@ import static com.sparta.week3_1.ExceptionHandler.ErrorCode.*;
 @RequiredArgsConstructor
 public class UserService {
 
+    private final JwtProvider jwtProvider;
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
 
@@ -27,7 +32,7 @@ public class UserService {
 
         // 비밀번호 일치 확인
         if (!passwordConfirm.equals(password)) {
-            throw new CustomException(WRONG_PASSWORD);
+            throw new CustomException(WRONG_PASSWORD_CONFIRM);
         }
         // 회원 ID 중복 확인
         Optional<User> found = userRepository.findByNickname(nickname);
@@ -49,19 +54,26 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    //public User login(LoginRequestDto requestDto, HttpServletResponse response) {
-    //    Authentication authentication = authenticationManager.authenticate(
-    //            new UsernamePasswordAuthenticationToken(requestDto.getNickname(), requestDto.getPassword()));
-    //
-    //    SecurityContextHolder.getContext().setAuthentication(authentication);
-    //
-    //    UserDetailsImpl principal = (UserDetailsImpl) authentication.getPrincipal();
-    //
-    //    final String accessToken = JwtTokenUtils.generateAccessToken(principal);
-    //    response.addHeader(ACCESS_TOKEN_HEADER, "BEARER " + accessToken);
-    //    final String refreshToken = JwtTokenUtils.generateRefreshToken(principal);
-    //    response.addHeader(REFRESH_TOKEN_HEADER, refreshToken);
-    //
-    //    return principal.getUser();
-    //}
+    public User login(LoginRequestDto requestDto, HttpServletResponse response) {
+        // 아이디 틀림
+        User user = userRepository.findByNickname(requestDto.getNickname()).orElseThrow(
+                () -> new CustomException(NO_USER)
+        );
+
+        // 비밀번호 틀림
+        if (!passwordEncoder.matches(requestDto.getPassword(), user.getPassword())) {
+            throw new CustomException(NO_USER);
+        }
+
+        TokenDto tokenDto = jwtProvider.generateTokenDto(user);
+
+        setResponseHeader(response, tokenDto);
+
+        return user;
+    }
+
+    private static void setResponseHeader(HttpServletResponse response, TokenDto tokenDto) {
+        response.addHeader("Authorization", "BEARER " + tokenDto.getAccesstoken());
+        response.addHeader("refresh-token", tokenDto.getRefreshtoken());
+    }
 }

@@ -5,7 +5,6 @@ import com.sparta.week3_1.dto.SignupRequestDto;
 import com.sparta.week3_1.dto.UserResponseDto;
 import com.sparta.week3_1.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,8 +30,8 @@ public class UserController {
     }
 
     // 로그인
-    //@PostMapping("/login")
-    //public UserResponseDto login(@RequestBody LoginRequestDto requestDto, HttpServletResponse response) {
-    //    return new UserResponseDto(userService.login(requestDto, response));
-    //}
+    @PostMapping("/login")
+    public UserResponseDto login(@RequestBody LoginRequestDto requestDto, HttpServletResponse response) {
+        return new UserResponseDto(userService.login(requestDto, response));
+    }
 }

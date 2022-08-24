@@ -1,12 +1,15 @@
-package com.sparta.week3_1.security.provider;
+package com.sparta.week3_1.security.jwt;
 
-import com.sparta.week3_1.security.UserDetailsImpl;
+import com.sparta.week3_1.dto.TokenDto;
+import com.sparta.week3_1.entity.RefreshToken;
+import com.sparta.week3_1.entity.User;
+import com.sparta.week3_1.repository.RefreshTokenRepository;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,48 +21,42 @@ import java.util.Date;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class JwtProvider {
 
     private final UserDetailsService userDetailsService;
+    private final RefreshTokenRepository refreshTokenRepository;
 
-    @Autowired
-    public JwtProvider(UserDetailsService userDetailsService) {
-        this.userDetailsService = userDetailsService;
-    }
 
     private final String JWT_SECRET = "secretKeysecretKeysecretKeysecretKeysecretKeysecretKey";
     private final byte[] keyBytes = Decoders.BASE64.decode(JWT_SECRET);
     private final Key key = Keys.hmacShaKeyFor(keyBytes);
 
-    // 토큰 유효시간
-    private final int JWT_EXPIRATION_MS = 604800000;
+    public TokenDto generateTokenDto(User user) {
+        long now = new Date().getTime();
 
-    // jwt 토큰 생성
-    public String generateAccessToken(Authentication authentication) {
-
-        Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + JWT_EXPIRATION_MS);
-
-        UserDetailsImpl userDetails = ((UserDetailsImpl) authentication.getPrincipal());
-
-        return Jwts.builder()
-                .setSubject(userDetails.getUsername()) // 사용자
-                .setIssuedAt(new Date()) // 현재 시간 기반으로 생성
-                .setExpiration(expiryDate) // 만료 시간 세팅
-                .signWith(key, SignatureAlgorithm.HS256) // 사용할 암호화 알고리즘, signature에 들어갈 secret 값 세팅
+        int ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30; // 30분
+        String accessToken = Jwts.builder()
+                .setSubject(user.getNickname())
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(now + ACCESS_TOKEN_EXPIRE_TIME))
+                .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
-    }
-    public String generateRefreshToken() {
 
-        Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + JWT_EXPIRATION_MS);
-
-        return Jwts.builder()
-                .setIssuedAt(new Date()) // 현재 시간 기반으로 생성
-                .setExpiration(expiryDate) // 만료 시간 세팅
-                .signWith(key, SignatureAlgorithm.HS256) // 사용할 암호화 알고리즘, signature에 들어갈 secret 값 세팅
+        int REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 14; // 2주일
+        String refreshToken = Jwts.builder()
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(now + REFRESH_TOKEN_EXPIRE_TIME))
+                .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
+
+        RefreshToken refreshTokenObject = new RefreshToken(user.getNickname(), refreshToken);
+
+        refreshTokenRepository.save(refreshTokenObject);
+
+        return new TokenDto(accessToken, refreshToken);
     }
+
 
     public Authentication getAuthentication(String token) {
         String username = Jwts.parserBuilder().setSigningKey(JWT_SECRET).build().parseClaimsJws(token).getBody().getSubject();
