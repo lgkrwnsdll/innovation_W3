@@ -24,7 +24,7 @@ public enum ErrorCode {
     NULL_ID("NULL_ID", "Id Doesn't Exist"),
 
     //유효하지 않은 토큰
-    INVALIDATE_TOKEN("INVALIDATE_TOKEN", "Unauthorized or No Token"),
+    INVALID_TOKEN("INVALID_TOKEN", "Invalid or No Token"),
 
     //유저의 권한 없는 요청
     NOT_ALLOWED("NOT_ALLOWED", "Only The Writer Is Allowed");

@@ -1,10 +1,9 @@
 package com.sparta.week3_1.security.filter;
 
 import com.sparta.week3_1.ExceptionHandler.CustomException;
-import com.sparta.week3_1.entity.RefreshToken;
-import com.sparta.week3_1.repository.RefreshTokenRepository;
 import com.sparta.week3_1.security.jwt.HeaderTokenExtractor;
 import com.sparta.week3_1.security.jwt.JwtPreProcessingToken;
+import com.sparta.week3_1.service.RefreshTokenService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContext;
@@ -18,7 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static com.sparta.week3_1.ExceptionHandler.ErrorCode.INVALIDATE_TOKEN;
+import static com.sparta.week3_1.ExceptionHandler.ErrorCode.INVALID_TOKEN;
 
 /**
  * Token 을 내려주는 Filter 가 아닌  client 에서 받아지는 Token 을 서버 사이드에서 검증하는 클레스 SecurityContextHolder 보관소에 해당
@@ -27,37 +26,36 @@ import static com.sparta.week3_1.ExceptionHandler.ErrorCode.INVALIDATE_TOKEN;
 public class JwtAuthFilter extends AbstractAuthenticationProcessingFilter {
 
     private final HeaderTokenExtractor extractor;
-    private final RefreshTokenRepository refreshTokenRepository;
+    private final RefreshTokenService refreshTokenService;
 
     public JwtAuthFilter(
             RequestMatcher requiresAuthenticationRequestMatcher,
             HeaderTokenExtractor extractor,
-            RefreshTokenRepository refreshTokenRepository
+            RefreshTokenService refreshTokenService
     ) {
         super(requiresAuthenticationRequestMatcher);
 
         this.extractor = extractor;
-        this.refreshTokenRepository = refreshTokenRepository;
+        this.refreshTokenService = refreshTokenService;
     }
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException {
 
+        // 요청 헤더에 토큰 존재 여부 확인
         String accessToken = request.getHeader("Authorization");
         String refreshToken = request.getHeader("refresh-token");
         if (accessToken == null || refreshToken == null) {
-            response.sendRedirect("/users/login");
-            return null;
+            throw new CustomException(INVALID_TOKEN);
         }
 
-        RefreshToken originalRefreshToken = refreshTokenRepository.findByRefreshToken(refreshToken);
-        if (originalRefreshToken == null) {
-            throw new CustomException(INVALIDATE_TOKEN);
-        }
+        // refresh token 검증 (RefreshTokenService에 위임)
+        refreshTokenService.checkToken(refreshToken);
 
         JwtPreProcessingToken extractedAccessToken = new JwtPreProcessingToken(
                 extractor.extract(accessToken, request));
 
+        // access token 검증 (JWTAuthProvider에 위임)
         return super
                 .getAuthenticationManager()
                 .authenticate(extractedAccessToken);
@@ -77,7 +75,7 @@ public class JwtAuthFilter extends AbstractAuthenticationProcessingFilter {
         SecurityContext context = SecurityContextHolder.createEmptyContext();
 
         context.setAuthentication(authResult);
-        SecurityContextHolder.setContext(context);
+        SecurityContextHolder.setContext(context); // 인증 성공 정보를 SecurityContextHolder에 담아 이후 UsernamePasswordAuthenticationFilter도 통과
 
         // FilterChain chain 해당 필터가 실행 후 다른 필터도 실행할 수 있도록 연결실켜주는 메서드
         chain.doFilter(

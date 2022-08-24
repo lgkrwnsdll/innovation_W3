@@ -1,5 +1,7 @@
 package com.sparta.week3_1.ExceptionHandler;
 
+import com.auth0.jwt.exceptions.JWTDecodeException;
+import com.auth0.jwt.exceptions.SignatureVerificationException;
 import com.sparta.week3_1.dto.ExceptionDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -8,10 +10,11 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 
+import static com.sparta.week3_1.ExceptionHandler.ErrorCode.INVALID_TOKEN;
 import static com.sparta.week3_1.ExceptionHandler.ErrorCode.NULL_ID;
 
 @Slf4j
-@RestControllerAdvice // 프로젝트 전역에서 발생하는 에러 관리
+@RestControllerAdvice // 여러 컨트롤러에 대해 전역적인 에러 관리 (AOP)
 @RequiredArgsConstructor
 public class CustomExceptionHandler {
 

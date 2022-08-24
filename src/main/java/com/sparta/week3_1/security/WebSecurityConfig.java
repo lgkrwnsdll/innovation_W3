@@ -6,6 +6,7 @@ import com.sparta.week3_1.security.jwt.HeaderTokenExtractor;
 import com.sparta.week3_1.security.provider.LoginAuthProvider;
 import com.sparta.week3_1.security.provider.JWTAuthProvider;
 import com.sparta.week3_1.security.filter.JwtAuthFilter;
+import com.sparta.week3_1.service.RefreshTokenService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -27,15 +28,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final JWTAuthProvider jwtAuthProvider;
     private final HeaderTokenExtractor headerTokenExtractor;
+    private final RefreshTokenService refreshTokenService;
     private final RefreshTokenRepository refreshTokenRepository;
 
     public WebSecurityConfig(
             JWTAuthProvider jwtAuthProvider,
             HeaderTokenExtractor headerTokenExtractor,
+            RefreshTokenService refreshTokenService,
             RefreshTokenRepository refreshTokenRepository
     ) {
         this.jwtAuthProvider = jwtAuthProvider;
         this.headerTokenExtractor = headerTokenExtractor;
+        this.refreshTokenService = refreshTokenService;
         this.refreshTokenRepository = refreshTokenRepository;
     }
 
@@ -127,7 +131,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         JwtAuthFilter filter = new JwtAuthFilter(
                 matcher,
                 headerTokenExtractor,
-                refreshTokenRepository
+                refreshTokenService
+
         );
         filter.setAuthenticationManager(super.authenticationManagerBean());
 
