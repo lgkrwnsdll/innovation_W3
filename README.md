@@ -3,6 +3,9 @@
 ### + 회원 기능 추가 (8/19~8/25)
 <br/>
 
+### :fax:ERD
+![ex_screenshot](./innovation_W3_2.png)
+<br/>
 
 __1. 수정, 삭제 API의 request를 어떤 방식으로 사용하셨나요? (param, query, body)__
 - @requestbody로 http body에 담긴 데이터를 받고, @PathVariable로 id를 받았다
