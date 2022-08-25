@@ -30,10 +30,6 @@ public class UserService {
         String password = requestDto.getPassword();
         String passwordConfirm = requestDto.getPasswordConfirm();
 
-        // 비밀번호 일치 확인
-        if (!passwordConfirm.equals(password)) {
-            throw new CustomException(WRONG_PASSWORD_CONFIRM);
-        }
         // 회원 ID 중복 확인
         Optional<User> found = userRepository.findByNickname(nickname);
         if (found.isPresent()) {
@@ -45,6 +41,10 @@ public class UserService {
 
         if(!Pattern.matches(idPattern, nickname) || !Pattern.matches(pwPattern, password)) {
             throw new CustomException(WRONG_FORM);
+        }
+        // 비밀번호 일치 확인
+        if (!passwordConfirm.equals(password)) {
+            throw new CustomException(WRONG_PASSWORD_CONFIRM);
         }
 
         // 비밀번호 암호화

@@ -7,6 +7,7 @@ import com.sparta.week3_1.security.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -54,8 +55,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .addFilterBefore(new JwtAuthFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()
-                .antMatchers("/users/**", "/posts", "/comments")
-                .permitAll()
+                .antMatchers("/users/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/posts").permitAll()
+                .antMatchers(HttpMethod.GET, "/comments").permitAll()
                 .anyRequest()
                 .authenticated();
     }

@@ -28,8 +28,6 @@ dependencies {
     implementation group: 'org.json', name: 'json', version: '20220320'
     // Spring Security
     implementation 'org.springframework.boot:spring-boot-starter-security'
-    // Thymeleaf (뷰 템플릿 엔진)
-    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     // JWT
     implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
     implementation 'commons-codec:commons-codec:1.5'
