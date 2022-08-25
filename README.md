@@ -1,5 +1,6 @@
-# week3_1_assignment
-### 기본 CRUD 구현한 Spring Boot 프로그램
+# Innovation Camp Spring Assignment
+### 기본 CRUD 구현한 Spring Boot 프로그램(8/12~8/18)
+### + 회원 기능 추가 (8/19~8/25)
 <br/>
 
 
@@ -25,13 +26,18 @@ __5. 작성한 코드에서 빈(Bean)을 모두 찾아보세요!__
 - ExceptionController, BoardController, BoardService, BoardRepository
 <br/>
 
-__6. API 명세서 작성 가이드라인을 검색하여 직접 작성한 명세서와 비교해보세요!__   
+__6. API 명세서 작성 가이드라인을 검색하여 직접 작성한 명세서와 비교해보세요! (8/25 수정)__   
 
 | 기능                        | Method  | URL                                    | Request           | Response                                |
 |-----------------------------|-----|---------------------------------------|------------------------------------------------------------|------|
-| 게시글 전체 조회            | GET  | /posts | -   |{"success":true,"data":[{"createdAt":"2022-08-16T00:38:46.674701","modifiedAt":"2022-08-16T02:43:32.750165","id":3,"title":"title2","content":"content2","author":"author2"},{"createdAt":"2022-08-16T00:38:45.366157","modifiedAt":"2022-08-16T00:38:45.366157","id":2,"title":"title","content":"content","author":"author"}],"error":null}  |
-| 게시글 조회                 | GET  | /posts/{id}   | -           | {"success":true,"data":{"createdAt":"2022-08-16T00:38:45.366157","modifiedAt":"2022-08-16T00:38:45.366157","id":2,"title":"title","content":"content","author":"author"},"error":null} |
-| 게시글 등록                  | POST  | /posts    | {"title":"title", "content":"content", "author":"author", "password":1234}    | {"success":true,"data":{"createdAt":"2022-08-16T10:30:57.582101","modifiedAt":"2022-08-16T10:30:57.582101","id":4,"title":"title","content":"content","author":"author"},"error":null} |
-| 비밀번호 확인                  | POST  | /posts/{id}    | {"password":1234} |{"success": true, "data": true, "error": null}  |
-| 게시글 수정              | PUT  | /posts/{id}  | {"title":"title2", "content":"content2", "author":"author2", "password":1234}  | {"success":true,"data":{"createdAt":"2022-08-16T00:38:45.366157","modifiedAt":"2022-08-16T00:38:45.366157","id":2,"title":"title2","content":"content2","author":"author2"},"error":null} |
-| 게시글 삭제                | DELETE  | /posts/{id}  | -  |  {"success": true, "data": true, "error": null}|
+| 회원가입                     | POST  | /users/signup | 아이디, 비밀번호, 비밀번호 확인   | 성공메세지 + 가입 정보 |
+| 로그인                       | POST  | /users/login | 아이디, 비밀번호   |성공메세지 + 로그인 정보|
+| 게시글 목록 조회            | GET  | /posts | -   | 성공메세지 + 게시글 목록 정보|
+| 게시글 조회                 | GET  | /posts/{id}   | -           | 성공메세지 + 게시글 정보 |
+| 게시글 등록                  | POST  | /posts/auth    |  헤더: JWT, 바디: 제목, 내용 | 성공메세지 + 게시글 정보 |
+| 게시글 수정                | PUT  | /posts/auth/{id}  |  헤더: JWT, 바디: 제목, 내용 | 성공메세지 + 게시글 정보 |
+| 게시글 삭제                | DELETE  | /posts/auth/{id}  | 헤더: JWT  | 성공메세지 |
+| 댓글 목록 조회                | GET  | /comments/{id}  |   | 성공메세지 + 댓글 목록 정보 |
+| 댓글 등록                | POST  | /comments/auth/{id}  |  헤더: JWT, 바디: 게시글 id, 내용  | 성공메세지 + 댓글 정보 |
+| 댓글 수정                | PUT  | /comments/auth/{id}  |  헤더: JWT, 바디: 게시글 id, 내용  | 성공메세지 +  |
+| 댓글 삭제                | DELETE  | /comments/auth/{id}  |  헤더: JWT  | 성공메세지 |
